@@ -1,0 +1,14 @@
+[project]
+name = "zettelkasten-card-mcp"
+version = "0.1.0"
+description = "MCP server for AI-assisted Zettelkasten card creation with guided workflows"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "mcp>=1.0.0",
+    "pyyaml>=6.0.0",
+    "python-dateutil>=2.8.0"
+]
+
+[project.scripts]
+zettelkasten-mcp = "zettelkasten_mcp.server:main"

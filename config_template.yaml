@@ -1,0 +1,16 @@
+# Zettelkasten MCP Server Configuration
+
+# Path to the single template file
+template_file: "./template/{timestamp} - {title}.md"
+
+# Where generated cards are saved
+# Change this to your Zettelkasten directory
+output_directory: "./saved/"
+
+# File operation settings
+file_operations:
+  # Create backup before overwriting existing files
+  create_backup: true
+
+  # Sanitize filenames (remove unsafe characters)
+  filename_sanitization: true
