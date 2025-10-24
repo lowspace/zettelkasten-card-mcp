@@ -1,13 +1,14 @@
+
 ---
-title: {{title}}
-tags: {{tags}}
-timestamp: {{timestamp}}
+uid: {timestamp}
+aliases:
+  - "[]"
+created: {created_at}
+tags:
+citekey:
+source:
 ---
 
-# {{content_heading}}
+# {heading}
 
-{{content}}
-
-## Related Concepts
-
-## References
+{content}

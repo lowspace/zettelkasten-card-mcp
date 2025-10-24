@@ -117,19 +117,19 @@ def handle_apply_template(arguments: dict, config: Config) -> list[TextContent]:
     format_compact = local_now.strftime("%Y%m%d%H%M%S")
     format_iso_offset = local_now.isoformat(timespec='seconds')
 
-    # Apply template replacements
-    formatted_card = template_content.replace("{{title}}", title)
-    formatted_card = formatted_card.replace("{{content}}", content)
-    formatted_card = formatted_card.replace("{{timestamp}}", format_compact)
-    formatted_card = formatted_card.replace("{{created_at}}", format_iso_offset)
+    # Apply template replacements (using single braces to match user template format)
+    formatted_card = template_content.replace("{title}", title)
+    formatted_card = formatted_card.replace("{content}", content)
+    formatted_card = formatted_card.replace("{timestamp}", format_compact)
+    formatted_card = formatted_card.replace("{created_at}", format_iso_offset)
 
     # Handle heading - remove placeholder line if no heading provided
     if heading:
-        formatted_card = formatted_card.replace("{{heading}}", heading)
+        formatted_card = formatted_card.replace("{heading}", heading)
     else:
-        # Remove lines containing {{heading}} placeholder
+        # Remove lines containing {heading} placeholder
         lines = formatted_card.split('\n')
-        formatted_card = '\n'.join(line for line in lines if '{{heading}}' not in line)
+        formatted_card = '\n'.join(line for line in lines if '{heading}' not in line)
 
     # Create full filename with timestamp prefix
     filename = f"{format_compact} - {title}.md"

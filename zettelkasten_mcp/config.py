@@ -36,7 +36,8 @@ class Config:
                 self.data = yaml.safe_load(f) or {}
 
             # Parse configuration values
-            if 'template_file' in self.data:
+            # If user specifies template_file, use it; otherwise use default template.md
+            if 'template_file' in self.data and self.data['template_file']:
                 self.template_file = Path(self.data['template_file']).expanduser()
 
             if 'output_directory' in self.data:
