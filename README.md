@@ -1,4 +1,4 @@
-# Zettelkasten MCP Server
+# Zettelkasten Card MCP Server
 
 An MCP (Model Context Protocol) server that enables AI assistants to help you create well-structured Zettelkasten cards through a guided, inspectable workflow.
 
@@ -200,19 +200,18 @@ The template (`template.md`) uses these placeholders:
 **Template Structure**:
 ```markdown
 ---
-title: {{title}}
-tags: {{tags}}
-timestamp: {{timestamp}}
-created_at: {{created_at}}
+uid: {timestamp}
+aliases:
+  - "[]"
+created: {created_at}
+tags:
+citekey:
+source:
 ---
 
-# {{heading}}
+# {heading}
 
-{{content}}
-
-## Related Concepts
-
-## References
+{content}
 ```
 
 If no heading is generated, the `# {{heading}}` line is automatically removed.

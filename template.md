@@ -1,4 +1,3 @@
-
 ---
 uid: {timestamp}
 aliases:
