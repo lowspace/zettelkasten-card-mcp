@@ -137,7 +137,7 @@ async def list_tools() -> list[Tool]:
         ),
         Tool(
             name="apply_template",
-            description="Apply template formatting to all finalized components",
+            description="Apply template formatting to all finalized components and save the card",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -152,7 +152,7 @@ async def list_tools() -> list[Tool]:
                     "heading": {
                         "type": "string",
                         "description": "Optional content heading"
-                    },
+                    }
                 },
                 "required": ["title", "content"]
             }
