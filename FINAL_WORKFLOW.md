@@ -28,18 +28,18 @@
    → Confirms draft, shows preview, waits for user review + tags
 ```
 
-## Stage 2: Card Formatting (9 tools - unchanged)
+## Stage 2: Card Formatting (3 tools - optimized)
 
 User reviews draft, adds tags, then:
 
 ```
 start_card_generation
-  → title_reflection (optional regeneration)
-  → content_reflection (optional regeneration)
   → heading_reflection → generate_heading (optional)
-  → apply_template (format into template with timestamp)
-  → save_card
+  → apply_template (format with timestamp and save directly)
 ```
+
+**Optimization**: Merged apply_template and save_card into one operation.
+No preview shown - users check files locally (saves ~150 tokens per card).
 
 ## Key Clarifications
 
@@ -79,9 +79,9 @@ This generates the **draft body**, not the final formatted card.
 
 ## Tool Count
 
-- **Stage 1**: 6 tools (down from 8)
-- **Stage 2**: 9 tools (unchanged)
-- **Total**: 15 tools (down from 17)
+- **Stage 1**: 5 tools
+- **Stage 2**: 3 tools (optimized from 4+)
+- **Total**: 8 tools (down from 17 in original design)
 
 ## Files Structure
 

@@ -99,17 +99,15 @@ Generate the card.
 Claude will:
 1. **Route**: Decide if heading is needed
 2. **Generate heading** (if needed): "Spaced Repetition: Leveraging the Forgetting Curve for Long-Term Memory Retention"
-3. **Apply template**: Format with frontmatter and timestamps
-4. **Save card**: `20251023120530 - Spaced Repetition Learning Benefits.md`
+3. **Apply template and save**: Formats with frontmatter, timestamps, and saves directly
 
 ```
-Card saved successfully.
+Card saved: ~/zettelkasten/cards/20251023120530 - Spaced Repetition Learning Benefits.md
 
-Location: ~/zettelkasten/cards/20251023120530 - Spaced Repetition Learning Benefits.md
-File Size: 1247 characters
-
-Your Zettelkasten card is ready. You can view or edit it anytime.
+1247 characters written.
 ```
+
+**Note**: No preview is shown to save tokens. Open the file locally to review.
 
 Done! Your card is saved with:
 - Frontmatter (title, tags, timestamps)
@@ -141,7 +139,7 @@ Done! Your card is saved with:
 
 ### Check if server is running
 
-Look for the Zettelkasten tools in Claude Desktop:
+Look for the Zettelkasten tools in Claude Desktop (8 tools total):
 - start_draft_generation
 - title_thinker
 - generate_title
@@ -149,8 +147,7 @@ Look for the Zettelkasten tools in Claude Desktop:
 - generate_content
 - start_card_generation
 - generate_heading
-- apply_template
-- save_card
+- apply_template (now includes save)
 
 ### Where are the logs?
 
@@ -183,10 +180,13 @@ This stage focuses on **presentation**:
 
 - **Purpose**: Format the finalized content into a proper Zettelkasten card
 - **Router Pattern**: Decides what's needed (heading or not)
-- **Template Application**: Adds timestamps, frontmatter, structure
+- **Template Application**: Adds timestamps, frontmatter, structure, and saves
 - **Output**: Saved card file with proper naming
+- **Token Efficiency**: No preview shown - users check locally
 
 **Why routing?** Not all cards need a detailed heading. The router pattern lets Claude decide based on content complexity.
+
+**Why no preview?** Showing previews wastes ~150 tokens per card. Users can open the saved file locally to review.
 
 ## Tips for Better Cards
 

@@ -94,8 +94,8 @@ Replace `/absolute/path/to/config.yaml` with the actual path to your config file
    - Say "generate card" with your tags
    - Claude decides if heading is needed
    - Optional: Generates detailed heading
-   - Applies template with timestamps
-   - Formats and saves the card
+   - Applies template with timestamps and saves directly
+   - Card saved (no preview - check locally for efficiency)
 
 ### Example Interaction
 
@@ -118,10 +118,11 @@ Claude: [Stage 2 workflow]
 - Decides heading is needed
 - Generates detailed heading
 - Applies template with timestamp: 20251023120530
-- Formats card with frontmatter
-- Saves to: ~/zettelkasten/cards/20251023120530 - MCP Tool Driven Sequential Workflow.md
+- Formats and saves card
 
-Claude: Card saved successfully!
+Claude: Card saved: ~/zettelkasten/cards/20251023120530 - MCP Tool Driven Sequential Workflow.md
+
+1247 characters written.
 ```
 
 ## Architecture
@@ -139,8 +140,9 @@ User Action: Review, request changes, add tags
 **Stage 2: Card Formatting**
 ```
 Input:  Draft + Title + User Tags + User Feedback
-Process: Router (heading decision) → [Optional: Generate heading] → Apply template → Save
+Process: Router (heading decision) → [Optional: Generate heading] → Apply template (formats + saves)
 Output: Saved Zettelkasten card with timestamp
+Note: No preview shown - users check cards locally for better token efficiency
 ```
 
 ### Tool Chain
@@ -154,9 +156,9 @@ start_draft_generation → title_thinker → generate_title
 
 [User Review & Tag Addition]
 
-Stage 2 (4 tools):
+Stage 2 (3 tools - optimized):
 start_card_generation → [optional: generate_heading]
-→ apply_template → save_card
+→ apply_template (formats and saves directly)
 ```
 
 ### Key Innovations
