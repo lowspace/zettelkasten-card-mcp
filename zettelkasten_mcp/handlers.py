@@ -51,11 +51,12 @@ def handle_generate_title(arguments: dict, config: Config) -> list[TextContent]:
 def handle_content_thinker(arguments: dict, config: Config) -> list[TextContent]:
     """Handle content_thinker tool call."""
     title = arguments["title"]
+    reasoning = arguments.get("reasoning", "")
     next_tool = "generate_content"
 
     return [TextContent(
         type="text",
-        text=CONTENT_GENERATION_PROMPT.format(
+        text=CONTENT_THINKER_PROMPT.format(
             title=title,
             next_tool=next_tool
         )

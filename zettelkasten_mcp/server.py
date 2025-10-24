@@ -90,12 +90,16 @@ async def list_tools() -> list[Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "The title that was generated for this card."
+                    },
                     "reasoning": {
                         "type": "string",
                         "description": "The detailed reasoning about the card content given the title."
                     }
                 },
-                "required": ["reasoning"]
+                "required": ["title", "reasoning"]
             }
         ),
         Tool(
