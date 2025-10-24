@@ -64,10 +64,12 @@ def handle_content_thinker(arguments: dict, config: Config) -> list[TextContent]
 
 def handle_generate_content(arguments: dict, config: Config) -> list[TextContent]:
     """Handle generate_content tool call."""
+    title = arguments.get("title", "")
+    content = arguments.get("content", "")
 
     return [TextContent(
         type="text",
-        text=DRAFT_COMPLETE_PROMPT )
+        text=DRAFT_COMPLETE_PROMPT
     )]
 
 # ============================================================================
