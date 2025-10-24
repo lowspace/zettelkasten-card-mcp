@@ -1,20 +1,78 @@
 # Zettelkasten Card MCP Server
 
-An MCP (Model Context Protocol) server that enables AI assistants to help you create well-structured Zettelkasten cards through a guided, inspectable workflow.
+An MCP (Model Context Protocol) server that helps you capture insights from long AI conversations as permanent Zettelkasten notes.
 
-## Overview
+## Why This Exists
 
-This server implements a **tool-driven workflow** with **embedded prompts** to create Zettelkasten cards automatically while maintaining full transparency and user control. Unlike traditional MCP designs that rely on Resources or Prompts, this system uses tool chaining to guide Claude through a complete card creation process.
+**Problem**: During long AI conversations, you gain valuable insights but they get lost in the chat history. You want to capture specific concepts as permanent, atomic notes.
 
-### Key Features
+**Solution**: This MCP server is your **copilot for distilling insights**. When YOU decide something is worth saving, say "create a card about X" and it helps you synthesize that specific topic into a standalone note.
 
-- **Two-Stage Workflow**: Separate content creation from formatting for efficient iteration
-- **Inspectable**: AI reasoning visible through "think tools" at each stage
-- **Stateless Server**: Compatible with multiple MCP clients
-- **User Control**: Manual tagging and content review checkpoints
-- **Single Template System**: Unified template with optional heading support
-- **Embedded Prompts**: Detailed generation instructions loaded only when needed
-- **Narrative Synthesis**: Converts conversations into flowing first-person articles
+**Core Motivation**: Give you control over what to capture. The AI doesn't decide for you—it helps when you're ready to distill.
+
+**Important**: This is a user-initiated tool. The AI won't automatically suggest or create cards. You decide what's worth capturing and when.
+
+## See It In Action
+
+**During an AI conversation:**
+
+```
+You: Can you explain how MCP servers maintain state across tool calls?
+
+AI: [Detailed explanation about stateless design, context flow, patterns...]
+
+You: This is really helpful. Create a Zettelkasten card about "MCP stateless design patterns"
+
+AI: [Stage 1: Draft Generation]
+    - Thinking about title...
+    - Generated: "MCP Stateless Design Patterns"
+    - Thinking about content structure...
+    - Generating content by synthesizing our discussion...
+
+    Draft complete. Here's what I created:
+
+    Title: MCP Stateless Design Patterns
+    Content: [Shows synthesized narrative article]
+
+    Review the draft and provide tags when ready.
+
+You: Looks good! Tags: #MCP #Architecture #Patterns
+
+AI: [Stage 2: Card Formatting]
+    - Deciding if heading needed...
+    - Generating detailed heading...
+    - Applying template with timestamp...
+
+    Card saved: 20251024150530 - MCP Stateless Design Patterns.md
+```
+
+**Result**: A permanent, atomic note in your Zettelkasten—captured from our conversation, ready to link with other notes.
+
+---
+
+**Another quick example:**
+
+```
+You: [After discussing database indexing for 10 minutes]
+     Create a card about "B-tree index tradeoffs"
+
+AI: [Generates draft → you review → add tags → saves]
+    Card saved: 20251024151230 - B-tree Index Tradeoffs.md
+```
+
+**That's it.** You decide what to capture, AI helps you distill it. Your knowledge, your control.
+
+## Key Features
+
+- **User-Initiated**: You decide what and when to capture—AI doesn't auto-suggest
+- **Two-Stage Workflow**: Draft generation (content) → Card formatting (save)
+- **Review Checkpoint**: You approve content and add tags before saving
+- **Narrative Synthesis**: Converts dialogue into flowing first-person articles
+- **Atomic Notes**: One concept per card, focused and self-contained
+- **Think Tools**: AI reasoning visible at each step
+- **Token Optimized**: No unnecessary previews (~180-230 tokens saved per card)
+- **Template Support**: Use default or specify your own template
+- **Stateless Design**: Works with any MCP client
 
 ## Installation
 
@@ -41,12 +99,14 @@ Edit `config.yaml` to set your Zettelkasten directory:
 
 ```yaml
 output_directory: "~/zettelkasten/cards"  # Change this to your directory
-template_file: "./template.md"
+template_file: "./template.md"             # Optional: use custom template
 ```
 
-### Add to Claude Desktop
+### Add to MCP Client
 
-Add this server to your Claude Desktop configuration file:
+**For Claude Desktop:**
+
+Add this server to your configuration file:
 
 **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 
@@ -56,7 +116,7 @@ Add this server to your Claude Desktop configuration file:
 {
   "mcpServers": {
     "zettelkasten": {
-      "command": "python",
+      "command": "/full/path/to/python3",
       "args": [
         "-m",
         "zettelkasten_mcp.server"
@@ -69,135 +129,45 @@ Add this server to your Claude Desktop configuration file:
 }
 ```
 
+Replace `/full/path/to/python3` with your Python path (run `which python3` to find it).
+
 Replace `/absolute/path/to/config.yaml` with the actual path to your config file.
+
+### Restart Your MCP Client
+
+Quit and restart your MCP client (e.g., Claude Desktop) to load the server.
 
 ## Usage
 
 ### Basic Workflow
 
-1. **Start a conversation with Claude Desktop**
+1. **Have a conversation** with your AI assistant about any topic
+2. **When YOU decide to capture something**, request a card: "Create a Zettelkasten card about [concept]"
+3. **Review the draft** - AI shows you the generated title and content
+4. **Add your tags** - Provide your personal tags (e.g., `#Learning #Databases`)
+5. **Done** - Card is saved with timestamp to your Zettelkasten directory
 
-2. **Request a card**: "Generate a Zettelkasten card about [topic]"
+**Remember**: The AI is your copilot. It waits for your command. You decide what's worth capturing.
 
-3. **Stage 1 - Draft Generation**:
-   - Claude will automatically call the workflow tools
-   - Title thinking → Title generation
-   - Content thinking → Content generation
-   - Draft preview
+### Tips
 
-4. **User Review**:
-   - Review the generated draft
-   - Request changes if needed
-   - Add your personal tags (e.g., `#SoftwareEngineering #MCP`)
+**Be specific**: "Create a card about recursion base cases" is better than "make a card about recursion"
 
-5. **Stage 2 - Card Formatting**:
-   - Say "generate card" with your tags
-   - Claude decides if heading is needed
-   - Optional: Generates detailed heading
-   - Applies template with timestamps and saves directly
-   - Card saved (no preview - check locally for efficiency)
+**Engage first**: Have a meaningful discussion, then capture the insight
 
-### Example Interaction
+**Review carefully**: Stage 1 gives you a checkpoint to refine before saving
 
-```
-You: Generate a Zettelkasten card about MCP tool-driven workflows
+**Use your tags**: Tags are personal—use your own system
 
-Claude: [Automatically goes through Stage 1 workflow]
-- Thinks about title framing
-- Generates: "MCP Tool Driven Sequential Workflow"
-- Thinks about content structure
-- Generates draft content synthesizing our conversation
-- Shows preview
-
-Claude: The draft generation workflow is completed. Please review and provide feedback or tags.
-
-You: Looks great! Tags: #MCP #WorkflowDesign #SoftwareEngineering
-     Generate the card.
-
-Claude: [Stage 2 workflow]
-- Decides heading is needed
-- Generates detailed heading
-- Applies template with timestamp: 20251023120530
-- Formats and saves card
-
-Claude: Card saved: ~/zettelkasten/cards/20251023120530 - MCP Tool Driven Sequential Workflow.md
-
-1247 characters written.
-```
-
-## Architecture
-
-### Two-Stage Design
-
-**Stage 1: Draft Generation**
-```
-Input:  User query or topic
-Process: Think → Generate title → Think → Generate content
-Output: Draft content for review
-User Action: Review, request changes, add tags
-```
-
-**Stage 2: Card Formatting**
-```
-Input:  Draft + Title + User Tags + User Feedback
-Process: Router (heading decision) → [Optional: Generate heading] → Apply template (formats + saves)
-Output: Saved Zettelkasten card with timestamp
-Note: No preview shown - users check cards locally for better token efficiency
-```
-
-### Tool Chain
-
-The workflow follows this simplified chain:
-
-```
-Stage 1 (5 tools):
-start_draft_generation → title_thinker → generate_title
-→ content_thinker → generate_content
-
-[User Review & Tag Addition]
-
-Stage 2 (3 tools - optimized):
-start_card_generation → [optional: generate_heading]
-→ apply_template (formats and saves directly)
-```
-
-### Key Innovations
-
-1. **Think Tools**: No-op tools that force Claude to articulate reasoning before generation
-2. **Embedded Prompts**: Detailed prompts returned in tool responses (not in system prompt)
-3. **Router Pattern**: Decides optional steps (like heading generation) based on content
-4. **Stateless Server**: All context flows through tool calls and responses
-5. **Narrative Synthesis**: Converts dialogue into cohesive first-person article format
+**Link cards**: Reference other card IDs in the content to build your knowledge graph
 
 ## Configuration
 
-### Directory Structure
-
-```
-zettelkasten-card-mcp/
-├── config.yaml                      # Main configuration
-├── template.md                      # Single unified template
-├── config/
-│   └── naming-conventions.md       # Card naming guidelines
-└── zettelkasten_mcp/               # Server code
-    ├── server.py                   # MCP server and tool definitions
-    ├── handlers.py                 # Tool handler functions
-    ├── responses.py                # All text templates and prompts
-    └── config.py                   # Configuration management
-```
-
 ### Template System
 
-The template (`template.md`) uses these placeholders:
+The server uses a single template file with placeholders:
 
-- `{{title}}` - Card title
-- `{{heading}}` - Optional detailed heading (line removed if not provided)
-- `{{content}}` - Main content body
-- `{{tags}}` - User-provided tags
-- `{{timestamp}}` - Compact timestamp (YYYYMMDDHHMMSS)
-- `{{created_at}}` - ISO format timestamp with timezone
-
-**Template Structure**:
+**Default template** (`template.md`):
 ```markdown
 ---
 uid: {timestamp}
@@ -214,106 +184,132 @@ source:
 {content}
 ```
 
-If no heading is generated, the `# {{heading}}` line is automatically removed.
+**Placeholders**:
+- `{timestamp}` - Compact timestamp (YYYYMMDDHHMMSS)
+- `{created_at}` - ISO format timestamp with timezone
+- `{heading}` - Optional detailed heading (line removed if not generated)
+- `{content}` - Main content body
+- `tags:` - Left empty for you to fill manually
+
+**Custom Template**:
+
+You can specify your own template in `config.yaml`:
+
+```yaml
+template_file: "/path/to/your/custom_template.md"
+```
+
+Use the same `{placeholder}` format (single braces) in your custom template.
 
 ### Filename Format
 
-Cards are saved with the format: `YYYYMMDDHHMMSS - Card Title.md`
+Cards are saved as: `YYYYMMDDHHMMSS - Card Title.md`
 
-Example: `20251023120530 - MCP Tool Driven Sequential Workflow.md`
+Example: `20251024150530 - MCP Stateless Design Patterns.md`
+
+### Directory Structure
+
+```
+zettelkasten-card-mcp/
+├── config.yaml                  # Configuration
+├── template.md                  # Default template
+├── zettelkasten_mcp/           # Server code
+│   ├── server.py               # MCP server and tool definitions
+│   ├── handlers.py             # Tool handler functions
+│   ├── responses.py            # Prompts and response templates
+│   └── config.py               # Configuration management
+└── docs/                       # Documentation
+```
+
+## Workflow Details
+
+### Stage 1: Draft Generation (5 tools)
+
+```
+start_draft_generation → title_thinker → generate_title
+→ content_thinker → generate_content
+```
+
+**What happens**:
+- AI thinks about the title, then generates it
+- AI thinks about content structure, then generates narrative article
+- You see the complete draft for review
+
+### Stage 2: Card Formatting (3 tools)
+
+```
+start_card_generation → [optional: generate_heading]
+→ apply_template (formats + saves)
+```
+
+**What happens**:
+- AI decides if a detailed heading is needed
+- Applies your template with timestamps
+- Saves directly to your Zettelkasten directory
+- No preview (you can open the file locally)
+
+### Token Optimization
+
+**No preview in Stage 2**: Saves ~150 tokens per card. You review the draft in Stage 1, then check the final file locally after saving.
+
+**Merged operations**: `apply_template` now formats and saves in one step (no separate `save_card` tool).
+
+**Total savings**: ~180-230 tokens per card (15-20% reduction).
 
 ## Design Philosophy
 
 ### User Agency First
 
-- **Manual Tagging**: Respects personal tag systems (too personal to automate)
-- **Review Checkpoints**: User reviews draft before formatting
-- **Flexible Workflow**: Optional heading generation based on content needs
+- **Manual Tagging**: Your personal tag system, you control it
+- **Review Checkpoint**: Stage 1 lets you refine before formatting
+- **No AI Tags**: Tags are too personal to automate
 
 ### Transparency
 
-- **Think Tools**: Show Claude's reasoning before generation
-- **Workflow Visibility**: Each step clearly communicated
-- **Tool Chaining**: Predictable, inspectable flow
+- **Think Tools**: See AI reasoning before generation
+- **Visible Workflow**: Each step clearly communicated
+- **Predictable Flow**: Tool chaining makes the process inspectable
+
+### Content Quality
+
+- **Narrative Synthesis**: Converts dialogue into flowing articles
+- **Atomic Notes**: One concept per card, focused and self-contained
+- **Human Perspective**: Content written from your viewpoint (first-person)
+- **Clean Markdown**: Minimal formatting, emphasis on content
 
 ### Efficiency
 
 - **Two Stages**: Finalize content once, then format
 - **Embedded Prompts**: Load instructions only when needed
-- **Smart Routing**: Skip unnecessary steps (e.g., heading when not needed)
-
-### Content Quality
-
-- **Narrative Synthesis**: Converts dialogue into flowing articles
-- **Atomic Notes**: Each card focuses on single concept
-- **Human Perspective**: Content written from user's viewpoint (first-person)
-
-## Development
-
-### Project Structure
-
-- `zettelkasten_mcp/server.py` - Main MCP server and tool definitions
-- `zettelkasten_mcp/handlers.py` - Individual handler functions for each tool
-- `zettelkasten_mcp/responses.py` - All prompts and response templates
-- `zettelkasten_mcp/config.py` - Configuration management
-- `template.md` - Single unified card template
-- `config/` - Configuration files and conventions
-
-### Handler Pattern
-
-Each tool follows this pattern in `handlers.py`:
-
-```python
-def handle_tool_name(arguments: dict, config: Config) -> list[TextContent]:
-    """Handle tool_name tool call."""
-    # Extract arguments
-    param = arguments["param"]
-
-    # Process logic
-    result = process(param)
-
-    # Return response with embedded prompt or next action
-    return [TextContent(
-        type="text",
-        text=RESPONSE_TEMPLATE.format(result=result, next_tool="next_tool_name")
-    )]
-```
-
-All tools are registered in `TOOL_HANDLERS` dictionary for dispatch.
-
-### Adding New Tools
-
-1. Define tool in `server.py` `list_tools()`
-2. Create handler function in `handlers.py`
-3. Add prompt/response template in `responses.py`
-4. Register handler in `TOOL_HANDLERS` dictionary
-5. Follow pattern: return response with next action instruction
+- **Token Optimized**: Skip unnecessary previews and operations
+- **Stateless Server**: Works with any MCP client
 
 ## Troubleshooting
 
-### Card Not Saved
+### Server Not Connecting
 
-- Check `output_directory` in `config.yaml`
-- Ensure directory exists and is writable
-- Check Claude Desktop logs for errors
+- Check Python path is correct: `which python3`
+- Verify CONFIG_PATH is absolute (not relative)
+- Restart your MCP client completely
+- Check logs for errors
 
-### Template Not Found
+### Cards Not Saving
 
-- Verify `template_file` path in `config.yaml`
-- Ensure `template.md` exists
-- Check file permissions
+- Verify `output_directory` exists and is writable
+- Check `template_file` path is correct
+- Ensure placeholders use single braces `{placeholder}`
+
+### Template Not Loading
+
+- If you specify `template_file`: ensure the file exists at that path
+- If not specified: default `template.md` in project root is used
+- Check for syntax errors in your custom template
 
 ### Workflow Stuck
 
-- Claude should follow `next_tool` instructions automatically
-- If stuck, you can manually guide: "Call [tool_name]"
-- Restart conversation if needed
-
-### Missing Tools in Claude
-
-- Restart Claude Desktop completely
-- Check config path is absolute (not relative)
-- Review Claude Desktop logs for server startup errors
+- AI should follow tool workflow automatically
+- If stuck, restart the conversation
+- Check MCP client logs for tool call errors
 
 ### Logs Location
 
@@ -321,9 +317,51 @@ All tools are registered in `TOOL_HANDLERS` dictionary for dispatch.
 
 **Windows**: `%APPDATA%\Claude\logs\`
 
+Look for `mcp*.log` files related to the zettelkasten server.
+
+## Development
+
+### Project Structure
+
+- `zettelkasten_mcp/server.py` - MCP server and tool definitions
+- `zettelkasten_mcp/handlers.py` - Tool handler functions (one per tool)
+- `zettelkasten_mcp/responses.py` - All prompts and response templates
+- `zettelkasten_mcp/config.py` - Configuration loading and validation
+- `template.md` - Default card template
+
+### Handler Pattern
+
+Each tool has a handler function:
+
+```python
+def handle_tool_name(arguments: dict, config: Config) -> list[TextContent]:
+    """Handle tool_name tool call."""
+    # Extract arguments
+    param = arguments["param"]
+
+    # Process
+    result = process(param)
+
+    # Return with embedded prompt or next instruction
+    return [TextContent(
+        type="text",
+        text=RESPONSE_TEMPLATE.format(result=result, next_tool="next_tool_name")
+    )]
+```
+
+All handlers are registered in `TOOL_HANDLERS` dictionary.
+
+### Adding New Tools
+
+1. Define tool in `server.py` `list_tools()`
+2. Create handler function in `handlers.py`
+3. Add prompt/response template in `responses.py`
+4. Register in `TOOL_HANDLERS` dictionary
+5. Follow pattern: return text with next action
+
 ## Credits
 
-Based on the Zettelkasten method of knowledge management, this server implements a novel MCP design pattern using tool-driven workflows and embedded prompts for automated yet transparent card creation.
+Built on the Zettelkasten method of knowledge management. Uses MCP for tool-driven workflows with embedded prompts for transparent, automated card creation.
 
 ## License
 
