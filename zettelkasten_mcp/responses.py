@@ -68,6 +68,10 @@ Generate the body content for a single Zettelkasten note by synthesizing the dia
 
 The final output should read like a self-contained, atomic note that documents the exploration of a single concept through a focused narrative of inquiry and discovery."""
 
+DRAFT_COMPLETE_PROMPT = """**Stage 1: Draft Generation Complete**
+
+**Next Steps**: Represent title and content to the user, and let them review manually."""
+
 # Stage 2: Card Generation Responses
 
 ROUTER_PROMPT = """Decides whether the content needs a heading.
@@ -111,18 +115,9 @@ Based on the card title and content summary, generate a detailed, descriptive he
 
 **NEXT ACTION**: Call {next_tool}."""
 
-RESPONSE_CARD_PREVIEW = """The Preview is:
-{preview}
+RESPONSE_CARD_SAVED = """Card saved: {filepath}{backup_msg}
 
-**NEXT Action**: Call {next_tool}."""
-
-RESPONSE_CARD_SAVED = """Card saved successfully.
-
-**Location**: {filepath}{backup_msg}
-
-**File Size**: {file_size} characters
-
-Your Zettelkasten card is ready. You can view or edit it anytime."""
+{file_size} characters written."""
 
 # Error Messages
 

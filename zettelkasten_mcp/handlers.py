@@ -64,10 +64,10 @@ def handle_content_thinker(arguments: dict, config: Config) -> list[TextContent]
 
 def handle_generate_content(arguments: dict, config: Config) -> list[TextContent]:
     """Handle generate_content tool call."""
-    # Get title from arguments or context
+
     return [TextContent(
         type="text",
-        text="The draft generation workflow is completed."
+        text=DRAFT_COMPLETE_PROMPT )
     )]
 
 # ============================================================================
@@ -94,11 +94,12 @@ def handle_generate_heading(arguments: dict, config: Config) -> list[TextContent
 
 
 def handle_apply_template(arguments: dict, config: Config) -> list[TextContent]:
-    """Handle apply_template tool call."""
+    """Handle apply_template tool call - formats and saves card directly."""
+    from .server import sanitize_filename, validate_output_path
+
     title = arguments["title"]
     content = arguments["content"]
     heading = arguments.get("heading", "")
-    next_tool="save_card"
 
     # Load template
     template_content = config.load_template()
@@ -128,25 +129,7 @@ def handle_apply_template(arguments: dict, config: Config) -> list[TextContent]:
         formatted_card = '\n'.join(line for line in lines if '{{heading}}' not in line)
 
     # Create full filename with timestamp prefix
-    full_filename = f"{format_compact} - {title}.md"
-
-    preview = formatted_card[:800] + ('...' if len(formatted_card) > 800 else '')
-
-    return [TextContent(
-        type="text",
-        text=RESPONSE_CARD_PREVIEW.format(
-            preview=preview,
-            next_tool=next_tool
-        )
-    )]
-
-
-def handle_save_card(arguments: dict, config: Config) -> list[TextContent]:
-    """Handle save_card tool call."""
-    from .server import sanitize_filename, validate_output_path
-
-    formatted_card = arguments["formatted_card"]
-    filename = arguments["filename"]
+    filename = f"{format_compact} - {title}.md"
 
     # Sanitize filename
     if config.filename_sanitization:
@@ -177,7 +160,7 @@ def handle_save_card(arguments: dict, config: Config) -> list[TextContent]:
         with open(filepath, 'w') as f:
             f.write(formatted_card)
 
-        backup_msg = "\n✅ Backup created for existing file." if backup_created else ""
+        backup_msg = " (backup created)" if backup_created else ""
 
         return [TextContent(
             type="text",
@@ -195,6 +178,8 @@ def handle_save_card(arguments: dict, config: Config) -> list[TextContent]:
         )]
 
 
+
+
 # ============================================================================
 # Handler Registry
 # ============================================================================
@@ -207,11 +192,10 @@ TOOL_HANDLERS = {
     "content_thinker": handle_content_thinker,
     "generate_content": handle_generate_content,
 
-    # Stage 2: Card Generation
+    # Stage 2: Card Generation (apply_template now does save directly)
     "start_card_generation": handle_start_card_generation,
     "generate_heading": handle_generate_heading,
     "apply_template": handle_apply_template,
-    "save_card": handle_save_card,
 }
 
 
